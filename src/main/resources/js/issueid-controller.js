@@ -49,7 +49,8 @@ AJS.toInit(function ()
             });
          }
          catch (err) {
-             location.href = "./ErrorPageAction.jspa?error=" + err;
+              console.log("I am in the initialization" + err);
+             // location.href = "./ErrorPageAction.jspa?error=" + err;
          }
     });
 
@@ -187,155 +188,9 @@ AJS.toInit(function ()
         infoTab();
     };
 
-    document.getElementById('cc-tab').onclick = function checkConsistency()
+    document.getElementById('ch-tab').onclick = function ()
     {
-        if (proposedViewActive)
-        {
-            nodes.remove(proposedNodeElements);
-            edges.remove(proposedEdgeElements);
-            proposedViewActive = false;
-        }
-        infoTabActive = false;
-
-        if (!consistencyChecked)
-        {
-            try
-            {
-                var xhr = new XMLHttpRequest();
-
-                var url = "../rest/issuesearch/1.0/getConsistencyCheckForRequirement?requirementId=" + issue + "&analysisOnly=false";
-                xhr.open("GET", url, true);
-
-                document.getElementById('ccResult').innerHTML = '<h5><font color=\"#0052CC\">Pending...</font></h5>';
-                document.getElementById('ccReleasesButton').innerHTML = "Searching for releases in link map...";
-                xhr.onreadystatechange = function ()
-                {
-                    if (xhr.readyState === 4 && xhr.status === 200)
-                    {
-                        var jsonPart = xhr.responseText.substring(xhr.responseText.indexOf("{"));
-                        var json = JSON.parse(jsonPart);
-
-                        var releases = json.response[0].Releases;
-                        var regsInReleases = "";
-                        for (var i = 0; i < releases.length; i++)
-                        {
-                            regsInReleases = regsInReleases + "<strong>Release " + releases[i].Release + "</strong><br>";
-                            for (var k = 0; k < releases[i].RequirementsAssigned.length; k++)
-                            {
-                                // to get the title we need to find our issue in allNodesArray
-                                // findInAllNodes expects an ID (e.g. 5030) but we only got the key (QTWB-30)
-                                // we look in nodeEdgeObjects for our key to get the id, to get the issue in allNodesArray
-                                // to get the title. make sure that we get valid nodes in return
-                                var title = "No title found";
-                                var key = releases[i].RequirementsAssigned[k];
-                                var nodeObject = findElement(nodeEdgeObject.nodes, "id", key);
-                                if (typeof nodeObject !== "undefined")
-                                {
-                                    var node = findInAllNodes(nodeObject.nodeid);
-                                    if (typeof node !== "undefined")
-                                    {
-                                        title = node.title;
-                                    }
-                                    else
-                                    {
-                                        // the node might be filtered at the moment
-                                        // we still want its title
-                                        node = findElement(filteredNodes, "id", nodeObject.nodeid);
-                                        if (typeof node !== "undefined")
-                                        {
-                                            title = node.title;
-                                        }
-                                    }
-                                }
-                                if (k < releases[i].RequirementsAssigned.length - 1)
-                                {
-                                    regsInReleases = regsInReleases + "<p class='hoverable-text' style='display:inline' onmouseover='highlightRequirement(\"" + key + "\");'>" +
-                                        key + "<span class='tooltiptext-top'>" + title + "</span></p>, ";
-                                }
-                                else
-                                {
-                                    // no ", " for last key but "<br>" is added
-                                    regsInReleases = regsInReleases + "<p class='hoverable-text' style='display:inline' onmouseover='highlightRequirement(\"" + key + "\");'>" +
-                                        key + "<span class='tooltiptext-top'>" + title + "</span></p><br>";
-                                }
-                            }
-                        }
-                        var ccMessage = "";
-
-                        var ignoredRelList = "";
-                        var relIgnored = json.response[0].RelationshipsIgnored;
-
-                        if (relIgnored.length !== 0)
-                        {
-                            ignoredRelList = ignoredRelList + "<br>" +
-                                "<table style='width: 100%'><tr>\n" +
-                                "<th>Issue Keys</th>" +
-                                "<th>Link type</th>" +
-                                "</tr>";
-                            for (var j = 0; j < relIgnored.length; j++)
-                            {
-                                ignoredRelList = ignoredRelList + "<tr><td>" + relIgnored[j].To + ", " + relIgnored[j].From + "</a></td><td>" + relIgnored[j].Type + "</td></tr>";
-                            }
-                            ignoredRelList = ignoredRelList + "</table>";
-                        } else
-                        {
-                            ignoredRelList = "<br>" + "There are no ignored links.";
-                        }
-
-                        if (json.response[0].Consistent)
-                        {
-                            ccMessage = ccMessage.concat("<h5><font color=\"#0052cc\">Release plan is consistent.</font></h5>");
-
-                        } else
-                        {
-                            ccMessage = ccMessage.concat("<h5><font color=\"#CC0000\">Release plan is inconsistent.</font></h5>");
-                            // document.getElementById('ccInconsistencisBtn').style.display = "inline-block";
-                        }
-                        document.getElementById('ccResult').innerHTML = "<br>".concat(ccMessage).concat("<br>");
-                        document.getElementById('ccReleases').innerHTML = "<br>".concat(regsInReleases).concat("<br>");
-                        document.getElementById('ccReleasesButton').innerHTML = "Releases found";
-
-                        document.getElementById("ccRelIgnored").style.display = "inline-block";
-                        document.getElementById("ccRelIgnoredButton").style.display = "inline-block";
-                        document.getElementById('ccRelIgnored').innerHTML = ignoredRelList;
-
-                        var relList = "";
-
-                        var relInc = json.response[0].RelationshipsInconsistent;
-                        if (relInc.length === 0)
-                        {
-                            document.getElementById("ccRelIncButton").style.display = "none";
-                        }
-                        else
-                        {
-                            relList = relList + "<br>" +
-                                "<table style='width: 100%'><tr>\n" +
-                                "<th>From Issue</th>" +
-                                "<th>Link Type</th>" +
-                                "<th>To Issue</th>" +
-                                "</tr>";
-                            for (i = 0; i < relInc.length; i++)
-                            {
-                                relList = relList + '<tr><td><a href=\"../browse/' + relInc[i].From + '\" target=\"_blank\">' + relInc[i].From + '</a></td><td>'
-                                    + relInc[i].Type + '<td><a href=\"../browse/' + relInc[i].To + '\" target=\"_blank\">' + relInc[i].To + '</a></td></tr>';
-                            }
-                            relList = relList + "</table>";
-                            document.getElementById("ccRelInc").style.display = "inline-block";
-                            document.getElementById("ccRelIncButton").style.display = "inline-block";
-                            document.getElementById('ccRelInc').innerHTML = relList;
-                            document.getElementById('ccRelIncButton').innerHTML = "Inconsistent items";
-                        }
-                        consistencyChecked = true;
-                    }
-                };
-
-                xhr.send(null);
-            } catch (err)
-            {
-                alert(err);
-                document.getElementById('ccResult').innerHTML = "there was an error...";
-            }
-        }
+        checkHealth()
     };
 
     document.getElementById('filter-tab').onclick = function filterNodesTab()
@@ -416,7 +271,7 @@ var priorityArray = ["P0: Blocker", "P1: Critical", "P2: Important", "P3: Somewh
 //proposed View active boolean
 var proposedViewActive = false;
 //has the Consistency Checker been called
-var consistencyChecked = false;
+var healthChecked = false;
 //infoTab View active boolean
 var infoTabActive = true;
 //saves the Issue that links get proposed for
@@ -446,14 +301,16 @@ function callTransitiveClosure()
                         depth = max_depth;
                     }
                     if (typeof (nodeEdgeObject['0']['nodes']['0']) === "undefined") {
-                        window.location.replace('./ErrorPageAction.jspa?issue=' + issue);
+                        console.log("I am in transitive clousre1" + issue);
+                        // window.location.replace('./ErrorPageAction.jspa?issue=' + issue);
                     } else {
                         currentIssue = nodeEdgeObject['0']['nodes']['0']['id'];
                     }
                 }
                 else
                 {
-                    window.location.replace('./ErrorPageAction.jspa?issue=' + issue);
+                    console.log("I am in transitive clousre2" + issue);
+                    // window.location.replace('./ErrorPageAction.jspa?issue=' + issue);
                 }
             }
         };
@@ -1007,6 +864,12 @@ var colorPaletteStatus = {
     'not specified': 'unknown',
     'undefined': 'unknown'
 };
+
+var colorPaletteHealth = {
+    'Healthy': 'blue',
+    'Unhealthy': 'red'
+};
+
 //map to create the correct type of error, links like duplicates do not have a direction
 var arrowPaletteType = {
     'contributes': 'to',
@@ -1303,6 +1166,11 @@ var proposedSortingArray = [];
 function proposedLinks()
 {
     infoTabActive = false;
+    if (healthChecked)
+    {
+        colorByStatus();
+        healthChecked = false
+    }
     if (propLinksIssue !== currentIssue || !proposedViewActive)
     {
         propLinksIssue = currentIssue;
@@ -1470,7 +1338,7 @@ function proposedLinks()
 
         } catch (err)
         {
-            document.getElementById('ddResult').innerHTML = "We are sorry, there was an error getting the proposed dependencies.";
+            document.getElementById('ddResult').innerHTML = "We are sorry, there was an error getting the recommended links.";
             alert(err);
         }
     }
@@ -1484,10 +1352,10 @@ function fillProposedHTML()
 {
     if (proposedIssuesList.length === 0)
     {
-        document.getElementById('ddResult').innerHTML = '<h5><font color="#0052CC">No proposed links for issue <a href=\"../browse/' + currentIssue + '\" target=\"_blank\">' + currentIssue + '</a>.</font></h5>';
+        document.getElementById('ddResult').innerHTML = '<h5><font color="#0052CC">No recommended links for issue <a href=\"../browse/' + currentIssue + '\" target=\"_blank\">' + currentIssue + '</a>.</font></h5>';
     } else
     {
-        var stringList = '<h5><font color=\"#0052CC\">Proposed Links of <a href=\"../browse/' + currentIssue + '\" target=\"_blank\">' + currentIssue + '</a></font></h5>' +
+        var stringList = '<h5><font color=\"#0052CC\">Recommended Links of <a href=\"../browse/' + currentIssue + '\" target=\"_blank\">' + currentIssue + '</a></font></h5>' +
             "<table style='width: 100%'><tr>\n" +
             "<th>Issue Key</th>" +
             "<th>Link type</th>" +
@@ -1524,6 +1392,159 @@ function fillProposedHTML()
         }
         stringList = stringList + "<td><button class='button button-effect' onclick ='sendLinkData()'>Save</button></td><td></td><td></td><td></td></table>";
         document.getElementById('ddResult').innerHTML = stringList;
+    }
+}
+
+function checkHealth()
+{
+    if (proposedViewActive)
+    {
+        nodes.remove(proposedNodeElements);
+        edges.remove(proposedEdgeElements);
+        proposedViewActive = false;
+    }
+    infoTabActive = false;
+
+    if (!healthChecked)
+    {
+        inconsistentIssues = [];
+        inconsistentResolutions = [];
+        inconsistentTypes = [];
+        inconsistentComments = [];
+
+        var inconsistentExample = '{"issues": [{"key": "TCAP-275", "inc_type": [true, "ok"], "inc_res": [true, "ok"], "inc_comm": [true, "ok"]},{"key": "TCAP-274", "inc_type": [true, "ok"], "inc_res": [false, "Resolution not duplicate."], "inc_comm": [false, "Comment mentions other issue which is not linked."]}]}';
+        exampleResponse = JSON.parse(inconsistentExample);
+
+        $.each(exampleResponse['issues'], function (i, v)
+        {
+            var health_Status = v['inc_type'][0] && v['inc_res'][0] && v['inc_comm'][0];
+            var temp_issue = {key: v["key"], healthStatus: health_Status};
+
+            inconsistentIssues.push(temp_issue);
+            if (v['inc_type'][0] === true)
+            {
+                inconsistentTypes.push("ok");
+            }
+            else
+            {
+                inconsistentTypes.push(v['inc_type'][1]);
+            }
+            if (v['inc_res'][0] === true)
+            {
+                inconsistentResolutions.push("ok");
+            }
+            else
+            {
+                inconsistentResolutions.push(v['inc_res'][1]);
+            }
+            if (v['inc_comm'][0] === true)
+            {
+                inconsistentComments.push("ok");
+            }
+            else
+            {
+                inconsistentComments.push(v['inc_comm'][1]);
+            }
+        });
+
+        try
+        {
+            healthChecked = true;
+            document.getElementById('chResult').innerHTML = '<h5><font color=\"#0052CC\">Pending...</font></h5>';
+            fillHealthHTML();
+            colorByHealth();
+
+        } catch (err)
+        {
+            alert(err);
+            document.getElementById('chResult').innerHTML = "there was an error...";
+        }
+    }
+}
+
+function fillHealthHTML()
+{
+    var stringList = '<h5>Health Check for this network.</h5>' +
+        "<table style='width: 100%'><tr>\n" +
+        "<th>Issue Key</th>" +
+        "<th>Type</th>" +
+        "<th>Resolution</th>" +
+        "<th>Comments</th>" +
+        "</tr>";
+    // var selectionList = '<div class="custom-select">';
+
+    for (var i = 0; i < inconsistentIssues.length; i++)
+    {
+        var title = "No title found";
+        var node = findElement(inconsistentIssues, "key", inconsistentIssues[i]);
+        if (typeof node !== "undefined")
+        {
+            title = node.title;
+        }
+        var bgcol_type = "green";
+        var bgcol_res = "green";
+        var bgcol_comm = "green";
+        if (inconsistentTypes[i] != "ok")
+        {
+            bgcol_type = "red";
+        }
+        if (inconsistentResolutions[i] != "ok")
+        {
+            bgcol_res = "red";
+        }
+        if (inconsistentComments[i] != "ok")
+        {
+            bgcol_comm = "red";
+        }
+
+        stringList = stringList + "<tr><td class='hoverable-text'><a href='../browse/" + inconsistentIssues[i].key + "' target='_blank'>" + inconsistentIssues[i].key +
+            "<span class='tooltiptext-left'>" + title + "</span>" +
+            "</a></td>" +
+            "<td bgcolor="+ bgcol_type + ">" + inconsistentTypes[i] + "</td>" +
+            "<td bgcolor="+ bgcol_res + ">" + inconsistentResolutions[i] + "</td>" +
+            "<td bgcolor="+ bgcol_comm + ">" + inconsistentComments[i] + "</td>" +
+            "</tr>";
+    }
+    stringList = stringList + "</table>";
+    document.getElementById('chResult').innerHTML = stringList;
+
+}
+
+function colorByHealth()
+{
+    ogIssueGroupStatus = [];
+    var ids = nodes.getIds();
+    for (var i = 0; i < nodes.length; i++)
+    {
+        tempid = ids[i];
+
+        var ogIssueGroup = nodes.get(tempid).group;
+        var ogIssue = {id: tempid, ogGroup: ogIssueGroup};
+        ogIssueGroupStatus.push(ogIssue);
+
+        var issueInfo = findElement(helpNodeSet, "nodeid", tempid);
+        var incIssueInfo = findElement(inconsistentIssues, "key", issueInfo.id);
+        if (incIssueInfo.healthStatus === true)
+        {
+            nodes.update({id: tempid, group: 'green'})
+        }
+        else
+        {
+            nodes.update({id: tempid, group: 'red'})
+        }
+    }
+}
+
+function colorByStatus()
+{
+    var ids = nodes.getIds();
+    for (var i = 0; i < nodes.length; i++)
+    {
+        tempid = ids[i];
+        var ogIssueInfo = findElement(ogIssueGroupStatus, "id", tempid);
+        console.log("this is the group: " +  ogIssueInfo);
+        nodes.update({id: tempid, group: ogIssueInfo.ogGroup})
+
     }
 }
 
@@ -1789,12 +1810,17 @@ function infoTab()
         edges.remove(proposedEdgeElements);
         proposedViewActive = false;
     }
+    if (healthChecked)
+    {
+        colourByStatus();
+        healthChecked = false
+    }
     //display the initial infobox only if the user put exactly one issue in the input
     //get coressponding JSON
     var issueInfo = findElement(helpNodeSet, "id", currentIssue);
     //get information that should be displayed
-    var infoLink = "https://bugreports.qt.io/browse/" + currentIssue;
-    var infoLinkTestJIRA = "https://bugreports-test.qt.io/browse/" + currentIssue;
+    var infoLink = "https://www.jfrog.com/jira/browse/" + currentIssue;
+    // var infoLinkTestJIRA = "https://bugreports-test.qt.io/browse/" + currentIssue;
     var infoTitle = issueInfo.name;
     var infoType = issueInfo.requirement_type;
     if (infoType === "issue")
@@ -1847,13 +1873,13 @@ function infoTab()
         document.getElementById('infoBoxIssuePrio').innerHTML = '<img src="../download/resources/openreq.qt.issuelinkmap-jira-plugin.issuelinkmap-jira-plugin:issuelinkmap-jira-plugin-resources/images/prio/' + issueInfo.priority + '.png" width="20" height="20" align="middle"/>'.concat(" ").concat(infoPriority);
         document.getElementById('infoBoxIssueSummary').innerHTML = infoTitle;
         document.getElementById('infoBoxIssueResolution').innerHTML = infoResolution;
-        document.getElementById('infoBoxIssueEnv').innerHTML = infoEnvironment;
+        // document.getElementById('infoBoxIssueEnv').innerHTML = infoEnvironment;
         document.getElementById('infoBoxIssueCon').innerHTML = "" + infoConnectionsAmount;
-        document.getElementById('infoBoxIssueComponent').innerHTML = infoComponent;
-        document.getElementById('infoBoxIssueLabel').innerHTML = infoLabel;
-        document.getElementById('infoBoxIssueVersion').innerHTML = infoVersion;
-        document.getElementById('infoBoxIssueFix').innerHTML = infoFixVersion;
-        document.getElementById('infoBoxIssuePlatform').innerHTML = infoPlatform;
+        // document.getElementById('infoBoxIssueComponent').innerHTML = infoComponent;
+        // document.getElementById('infoBoxIssueLabel').innerHTML = infoLabel;
+        // document.getElementById('infoBoxIssueVersion').innerHTML = infoVersion;
+        // document.getElementById('infoBoxIssueFix').innerHTML = infoFixVersion;
+        // document.getElementById('infoBoxIssuePlatform').innerHTML = infoPlatform;
         document.getElementById("infoOther").style.display = "none";
     }
 }

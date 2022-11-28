@@ -56,20 +56,20 @@ $webResourceManager.requireResource(
 ##<%--This is the navigation bar located at the top, it contains a link to the project website and a search box--%>
 <div class="topnav">
     <div class="link-container">
-        <a target="_blank" href="https://openreq.eu/" style="padding: 0"><img alt="or_logo"
-                                                                              src="../download/resources/openreq.qt.issuelinkmap-jira-plugin.issuelinkmap-jira-plugin:issuelinkmap-jira-plugin-resources/images/or_icon.png"
-                                                                              width="40px" height="40px"/></a>
+##        <a target="_blank" href="https://openreq.eu/" style="padding: 0"><img alt="or_logo"
+##                                                                              src="../download/resources/openreq.qt.issuelinkmap-jira-plugin.issuelinkmap-jira-plugin:issuelinkmap-jira-plugin-resources/images/or_icon.png"
+##                                                                              width="40px" height="40px"/></a>
     ##    <a target="_blank" href="https://bugreports.qt.io/browse/">Qt's Jira</a>
     ##    <%--<a target="_blank" href="https://forum.qt.io/">Qt Forum</a>--%>
     ##    <%--<a target="_blank" href="https://forms.gle/GQQhym7obLEss3bCA">Feedback</a>--%>
-        <a class="button-effect" href="./LinkMapWebworkAction.jspa">Return to Info Page</a>
+        <a class="button-effect" href="./LinkMapWebworkAction.jspa">Return to Overview</a>
         <a target="_blank" href="https://github.com/OpenReqEU/issuelinkmap-jira-plugin/issues">Report a Bug</a>
     </div>
     <div class="text-container">
-        <strong>This is a prototype of the <a href="https://openreq.eu/"> OpenReq project</a>, please give feedback
-            through
-            the <a target="_blank" href="https://forum.qt.io/category/60/openreq-issue-link-map-tool"> Qt Forum </a> or
-            this <a target="_blank" href="https://forms.gle/EG6fd6QyCMXt7DEW9"> anonymous feedback form</a>.</strong>
+##        <strong>This is a prototype of the <a href="https://openreq.eu/"> OpenReq project</a>, please give feedback
+##            through
+##            the <a target="_blank" href="https://forum.qt.io/category/60/openreq-issue-link-map-tool"> Qt Forum </a> or
+##            this <a target="_blank" href="https://forms.gle/EG6fd6QyCMXt7DEW9"> anonymous feedback form</a>.</strong>
     </div>
     <div class="search-container">
         <form action="./IssueSearchWebworkAction.jspa" method="get" id="search-id" name="search">
@@ -89,7 +89,7 @@ $webResourceManager.requireResource(
     <div class="row">
         <div class="col-8">
             <div class="row">
-                <h2 id="issue-headline">Issue Links of </h2>
+                <h2 id="issue-headline">Links of </h2>
             </div>
 
         ## Manipulation of network
@@ -271,49 +271,49 @@ $webResourceManager.requireResource(
                                 <hr class="dropdownline">
                                 <span style="color: #14882c">
                                     <label>
-                                        <input name="DoneStatus" type="checkbox" id="done-toggle">
+                                        <input name="DoneStatus" type="checkbox" checked="checked" id="done-toggle">
                                         <strong>Done</strong>
                                     </label>
                                 </span>
                                 <br>
                                 <span>
                                     <label>
-                                        <input name="DoneStatus" type="checkbox" value="Closed"/>
+                                        <input name="DoneStatus" type="checkbox" checked="checked" value="Closed"/>
                                         Closed
                                     </label>
                                 </span>
                                 <br>
                                 <span>
                                     <label>
-                                        <input name="DoneStatus" type="checkbox" value="Done"/>
+                                        <input name="DoneStatus" type="checkbox" checked="checked" value="Done"/>
                                         Done
                                     </label>
                                 </span>
                                 <br>
                                 <span>
                                     <label>
-                                        <input name="DoneStatus" type="checkbox" value="Rejected"/>
+                                        <input name="DoneStatus" type="checkbox" checked="checked" value="Rejected"/>
                                         Rejected
                                     </label>
                                 </span>
                                 <br>
                                 <span>
                                     <label>
-                                        <input name="DoneStatus" type="checkbox" value="Resolved"/>
+                                        <input name="DoneStatus" type="checkbox" checked="checked" value="Resolved"/>
                                         Resolved
                                     </label>
                                 </span>
                                 <br>
                                 <span>
                                     <label>
-                                        <input name="DoneStatus" type="checkbox" value="Withdrawn"/>
+                                        <input name="DoneStatus" type="checkbox" checked="checked" value="Withdrawn"/>
                                         Withdrawn
                                     </label>
                                 </span>
                                 <hr class="dropdownline">
                                 <span>
                                     <label>
-                                        <input id="all-toggle" type="checkbox" checked="checked"/>
+                                        <input id="all-toggle" type="checkbox" checked="checked" checked="checked"/>
                                         <strong>All Statuses</strong>
                                     </label>
                                 </span>
@@ -467,29 +467,29 @@ $webResourceManager.requireResource(
         <div class="col-4">
 
         ## Legend
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Legend</h5>
-                    <p class="card-text">
-                    <div class="box blue" style="display: inline-block;">
-                        To-Do
-                    </div>
-                    <div class="box red" style="display: inline-block;">
-                        Stuck
-                    </div>
-                    <div class="box yellow" style="display: inline-block;">
-                        In Progress
-                    </div>
-                    <div class="box green" style="display: inline-block;">
-                        Done
-                    </div>
-                    (filtered out by default)
-                    <div class="box grey" style="display: inline-block;">
-                        not specified
-                    </div>
-                    </p>
-                </div>
-            </div>
+##            <div class="card">
+##                <div class="card-body">
+##                    <h5 class="card-title">Legend</h5>
+##                    <p class="card-text">
+##                    <div class="box blue" style="display: inline-block;">
+##                        To-Do
+##                    </div>
+##                    <div class="box red" style="display: inline-block;">
+##                        Stuck
+##                    </div>
+##                    <div class="box yellow" style="display: inline-block;">
+##                        In Progress
+##                    </div>
+##                    <div class="box green" style="display: inline-block;">
+##                        Done
+##                    </div>
+##                    (filtered out by default)
+##                    <div class="box grey" style="display: inline-block;">
+##                        not specified
+##                    </div>
+##                    </p>
+##                </div>
+##            </div>
         ## Information buttons
 
             <ul class="nav nav-tabs nav-fill mb-3" id="info-nav" role="tablist">
@@ -501,15 +501,15 @@ $webResourceManager.requireResource(
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="sd-tab" data-toggle="tab" href="#sd-box" role="tab"
-                       aria-controls="sd-tab" aria-selected="false">Link Detection
+                       aria-controls="sd-tab" aria-selected="false">Link Recommendation
                     </a>
-                    <span class="tooltiptext">The Link Detection service finds similar or related items based on the textual fields. The limit is set to 5, so after accepting or rejecting recommended links, there might be more, although with a lower score. These links are NOT written into the jira database.</span>
+                    <span class="tooltiptext">The Link Recommendations finds potentially similar or related items based on the textual fields. The limit is set to 5, so after accepting or rejecting recommended links, there might be more, although with a lower score. These links are NOT written into the jira database.</span>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="cc-tab" data-toggle="tab" href="#cc-box" role="tab"
-                       aria-controls="cc-tab" aria-selected="false">Consistency Checker
+                    <a class="nav-link" id="ch-tab" data-toggle="tab" href="#ch-box" role="tab"
+                       aria-controls="ch-tab" aria-selected="false">Health Checker
                     </a>
-                    <span class="tooltiptext">The Consistency Checker verifies the viability of the release plan regarding the issue link map, e.g. if a feature is required by another one, it is not assigned to later release. The Consistency Checker checks consistency always to depth 5. Currently links between projects are ignored by the Consistency Checker.</span>
+                    <span class="tooltiptext">The Health Checker looks for inconsistencies between the issue properties and comments and links.</span>
                 </li>
             </ul>
         ##            <%--Information box--%>
@@ -540,30 +540,30 @@ $webResourceManager.requireResource(
                                 <td><strong>Resolution</strong></td>
                                 <td id="infoBoxIssueResolution"></td>
                             </tr>
-                            <tr>
-                                <td><strong>Component</strong></td>
-                                <td id="infoBoxIssueComponent"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Label</strong></td>
-                                <td id="infoBoxIssueLabel"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Version</strong></td>
-                                <td id="infoBoxIssueVersion"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Fix Version</strong></td>
-                                <td id="infoBoxIssueFix"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Platform(s)</strong></td>
-                                <td id="infoBoxIssuePlatform"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Environment</strong></td>
-                                <td id="infoBoxIssueEnv"></td>
-                            </tr>
+##                            <tr>
+##                                <td><strong>Component</strong></td>
+##                                <td id="infoBoxIssueComponent"></td>
+##                            </tr>
+##                            <tr>
+##                                <td><strong>Label</strong></td>
+##                                <td id="infoBoxIssueLabel"></td>
+##                            </tr>
+##                            <tr>
+##                                <td><strong>Version</strong></td>
+##                                <td id="infoBoxIssueVersion"></td>
+##                            </tr>
+##                            <tr>
+##                                <td><strong>Fix Version</strong></td>
+##                                <td id="infoBoxIssueFix"></td>
+##                            </tr>
+##                            <tr>
+##                                <td><strong>Platform(s)</strong></td>
+##                                <td id="infoBoxIssuePlatform"></td>
+##                            </tr>
+##                            <tr>
+##                                <td><strong>Environment</strong></td>
+##                                <td id="infoBoxIssueEnv"></td>
+##                            </tr>
                             <tr>
                                 <td><strong>Links</strong></td>
                                 <td id="infoBoxIssueCon"></td>
@@ -582,32 +582,38 @@ $webResourceManager.requireResource(
                     <p id="ddInfo">Any accepted or rejected links are currently NOT written into the jira database, but are saved in an intermediate database for evaluation.</p>
                     <p id="ddPending"></p>
                 </div>
-                <div class="tab-pane fade" id="cc-box" role="tabpanel" aria-labelledby="cc-tab">
-                    <div class="row">
-                        <div class="col-8">
-                            <div id="ccResult"></div>
-                        </div>
+                <div class="tab-pane fade" id="ch-box" role="tabpanel" aria-labelledby="ch-tab">
+##                    <p id="chAmountResults"></p>
+                    <p id="chResult"></p>
+                    <p id="chInfo">This just finds potential issues which need to be resolved manually.</p>
+                    <p id="chPending"></p>
+                </div>
+##                <div class="tab-pane fade" id="cc-box" role="tabpanel" aria-labelledby="cc-tab">
+##                    <div class="row">
+##                        <div class="col-8">
+##                            <div id="ccResult"></div>
+##                        </div>
 ##                        <div class="col-4">
 ##                            <button class='button button-effect' onclick='getInconsistencies()'
 ##                                    id='ccInconsistencisBtn'
 ##                                    style="display: none;">Get inconsistencies
 ##                            </button>
 ##                        </div>
-                    </div>
-                    <div class="row">
-                        <button class="accordion" id="ccRelIncButton" style="display: none">Inconsistent releases
-                        </button>
-                        <div class="panel"><p id="ccRelInc" style="display: none"></p></div>
-                    </div>
-                    <div class="row">
-                        <button class="accordion" id="ccReleasesButton">Releases</button>
-                        <div class="panel"><p id="ccReleases"></p></div>
-                    </div>
-                    <div class="row">
-                        <button class="accordion" id="ccRelIgnoredButton" style="display: none">Ignored links
-                        </button>
-                        <div class="panel"><p id="ccRelIgnored" style="display: none"></p></div>
-                    </div>
+##                    </div>
+##                    <div class="row">
+##                        <button class="accordion" id="ccRelIncButton" style="display: none">Inconsistent releases
+##                        </button>
+##                        <div class="panel"><p id="ccRelInc" style="display: none"></p></div>
+##                    </div>
+##                    <div class="row">
+##                        <button class="accordion" id="ccReleasesButton">Releases</button>
+##                        <div class="panel"><p id="ccReleases"></p></div>
+##                    </div>
+##                    <div class="row">
+##                        <button class="accordion" id="ccRelIgnoredButton" style="display: none">Ignored links
+##                        </button>
+##                        <div class="panel"><p id="ccRelIgnored" style="display: none"></p></div>
+##                    </div>
                 </div>
             </div>
         </div>

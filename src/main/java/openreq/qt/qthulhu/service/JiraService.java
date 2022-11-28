@@ -78,7 +78,7 @@ public class JiraService implements JiraApi{
         }
         Requirement filteredReq = new Requirement();
         filteredReq.setId(req.getId());
-        return filteredReq;
+        return req;
     }
 
     // Query to Jira API if user can see the issue/requirement
