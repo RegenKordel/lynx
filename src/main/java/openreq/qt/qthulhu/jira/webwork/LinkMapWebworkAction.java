@@ -8,7 +8,6 @@ public class LinkMapWebworkAction extends JiraWebActionSupport
 {
     private static final Logger log = LoggerFactory.getLogger(LinkMapWebworkAction.class);
 
-
     @Override
     public String execute() throws Exception {
 

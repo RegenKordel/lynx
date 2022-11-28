@@ -50,7 +50,7 @@ AJS.toInit(function ()
          }
          catch (err) {
               console.log("I am in the initialization" + err);
-             // location.href = "./ErrorPageAction.jspa?error=" + err;
+              location.href = "./ErrorPageAction.jspa?error=" + err;
          }
     });
 

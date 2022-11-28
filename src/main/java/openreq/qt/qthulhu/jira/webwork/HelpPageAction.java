@@ -1,4 +1,4 @@
-package openreq.qt.test.jira.webwork;
+package openreq.qt.qthulhu.jira.webwork;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +8,9 @@ import javax.inject.Named;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
 @Named
-public class IssueSearchWebworkAction extends JiraWebActionSupport
+public class HelpPageAction extends JiraWebActionSupport
 {
-    private static final Logger log = LoggerFactory.getLogger(IssueSearchWebworkAction.class);
+    private static final Logger log = LoggerFactory.getLogger(HelpPageAction.class);
 
     @Inject
     private PageBuilderService pageBuilderService;
@@ -18,7 +18,7 @@ public class IssueSearchWebworkAction extends JiraWebActionSupport
     @Override
     public String execute() throws Exception {
         pageBuilderService.assembler().resources().requireWebResource(
-                "openreq.qt.issuelinkmap-jira-plugin.issuelinkmap-jira-plugin:issueid-controller"
+                "openreq.qt.issuelinkmap-jira-plugin.issuelinkmap-jira-plugin:help-page-controller"
         );
 
         return "success";
