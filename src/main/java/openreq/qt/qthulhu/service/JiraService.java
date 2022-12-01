@@ -67,7 +67,7 @@ public class JiraService implements JiraApi{
         for (Requirement req : requirements) {
             filtered.add(filterInfo(req, user));
         }
-        return filtered;
+        return requirements;
     }
 
     // Checks if user can access the issue/requirement. 

@@ -4,54 +4,71 @@ AJS.toInit(function ()
 {
     $(document).ready(function ()
     {
-          try {
+        try
+        {
             var url_string = window.location.href;
             var url = new URL(url_string);
             issue = url.searchParams.get("issue").toUpperCase();
             var depthParam = url.searchParams.get("depth");
-            if ((typeof depthParam === "undefined") || (depthParam === null) || (depthParam === "") ) {
+            if ((typeof depthParam === "undefined") || (depthParam === null) || (depthParam === ""))
+            {
                 depth = 1;
-            } else {
+            } else
+            {
                 depth = parseInt(depthParam, 10);
                 depth = Math.max(depth, 1);
                 depth = Math.min(depth, 5);
             }
-            document.getElementById('issue-headline').innerHTML = 'Issue Links of <a href=\"../browse/' + issue + '\" target=\"_blank\">' + issue + '</a>';
+            document.getElementById('issue-headline').innerHTML = 'Issue Links of <a href=\"https://www.jfrog.com/jira/browse/browse/' + issue + '\" target=\"_blank\">' + issue + '</a>';
             callTransitiveClosure();
             initNodesEdges();
             infoTab();
             calculatePositions();
             nodes.add(allNodesArray[0]);
+            console.log(JSON.stringify(allNodesArray[1], null, 4));
             nodes.add(allNodesArray[1]);
             edges.add(depth0Edges);
             edges.add(depth1Edges);
+            ids = nodes.getIds;
+            var ids = nodes.getIds();
+            for (var i = 0; i < nodes.length; i++)
+            {
+                tempid = ids[i];
+                console.log(JSON.stringify(nodes.get(i), null, 4));
+            }
             updateDepthButtons();
-            if (depth >= 2) {
+            if (depth >= 2)
+            {
                 add2layer()
             }
-            if (depth >= 3) {
+            if (depth >= 3)
+            {
                 add3layer();
             }
-            if (depth >= 4) {
+            if (depth >= 4)
+            {
                 add4layer();
             }
-            if (depth === 5) {
+            if (depth === 5)
+            {
                 add5layer();
             }
             initNetwork();
             filterNodes();
             resizeCanvas();
-            setTimeout(function(){
+            setTimeout(function ()
+            {
                 network.fit();
             }, 1000);
-            $(window).resize(function () {
+            $(window).resize(function ()
+            {
                 resizeCanvas();
             });
-         }
-         catch (err) {
-              console.log("I am in the initialization" + err);
-              location.href = "./ErrorPageAction.jspa?error=" + err;
-         }
+        } catch (err)
+        {
+            console.log("I am in the initialization" + err);
+            location.href = "./ErrorPageAction.jspa?error=" + err;
+        }
     });
 
     document.getElementById('depth-1-btn').onclick = function depth1()
@@ -296,18 +313,21 @@ function callTransitiveClosure()
                 if (xhr.status === 200)
                 {
                     nodeEdgeObject = JSON.parse(xhr.responseText);
+                    // console.log("Output" + xhr.responseText);
                     max_depth = nodeEdgeObject.max_depth;
-                    if (max_depth < depth) {
+                    if (max_depth < depth)
+                    {
                         depth = max_depth;
                     }
-                    if (typeof (nodeEdgeObject['0']['nodes']['0']) === "undefined") {
+                    if (typeof (nodeEdgeObject['0']['nodes']['0']) === "undefined")
+                    {
                         console.log("I am in transitive clousre1" + issue);
                         // window.location.replace('./ErrorPageAction.jspa?issue=' + issue);
-                    } else {
+                    } else
+                    {
                         currentIssue = nodeEdgeObject['0']['nodes']['0']['id'];
                     }
-                }
-                else
+                } else
                 {
                     console.log("I am in transitive clousre2" + issue);
                     // window.location.replace('./ErrorPageAction.jspa?issue=' + issue);
@@ -352,7 +372,9 @@ function findInAllNodes(id)
         }
     }
 }
-function newProposedAmount() {
+
+function newProposedAmount()
+{
     proposedAmount = document.getElementById("proposedResults").value;
     fillProposedHTML();
 }
@@ -427,7 +449,7 @@ function toggleAll(source)
 
 function isFiltered(status, type, priority, id)
 {
-    if(!(filterArray.includes(status) && filterArray.includes(type) && filterArray.includes(priority)))
+    if (!(filterArray.includes(status) && filterArray.includes(type) && filterArray.includes(priority)))
     {
         return true;
     }
@@ -457,8 +479,7 @@ function isFiltered(status, type, priority, id)
                             {
                                 return false;
                             }
-                        }
-                        else if (allEdges[i][k].to === id)
+                        } else if (allEdges[i][k].to === id)
                         {
                             node = findInAllNodes(allEdges[i][k].from);
                             //node is undefined if the node was already filtered out
@@ -500,7 +521,7 @@ function calculatePositions()
 
         //new position idea to avoid overlaps
         //loop from layer 5 to 1 to calculate sum of outgoing nodes
-        for (var i = allNodesArray.length - 1 ; i > 0; i--)
+        for (var i = allNodesArray.length - 1; i > 0; i--)
         {
             var maxAmount = -1;
             var amount;
@@ -590,7 +611,7 @@ function positionsOuterRings(depth)
     // justFill is a boolean; true means there are so many nodes on this layer that they will be placed next to eachother without gaps
     // false means the nodes will be roughly in the direction of their inner connected node, this makes more sense if the layer is not too full
     // "+ 5" is used because the not-just-filling algorithm works best with empty spaces
-    var justFill = (allNodesArray[depth].length + 5> (10 * depth));
+    var justFill = (allNodesArray[depth].length + 5 > (10 * depth));
     // increasing the radius by 20 roughly increases circumference by 125
     distances[depth] = Math.max(allNodesArray[depth].length * 20, distances[depth - 1] + 240);
 
@@ -604,13 +625,12 @@ function positionsOuterRings(depth)
         {
             // all nodes will be placed evenly on a circle
             angleDiff = 360 / allNodesArray[depth].length;
-        }
-        else
+        } else
         {
             // here we assume that there will be empty slots, the angle is dependent on the layer
             // if we calculated the angle as above (for justFill = true) the circle would be very loose
             arrayLength = depth * 10;
-            angleDiff = 360/arrayLength;
+            angleDiff = 360 / arrayLength;
 
             var sourceAngle = allNodesArray[depth - 1][i].angle;
             while (sourceAngle < 0)
@@ -619,7 +639,7 @@ function positionsOuterRings(depth)
             }
             sourceAngle = sourceAngle % 360;
             // making sure the angle is at least 0 and at most 359 so that we get a valid index
-            startIndex = Math.floor(sourceAngle/360 * arrayLength);
+            startIndex = Math.floor(sourceAngle / 360 * arrayLength);
             var free;
             var errorIndex;
             var loopCount = 0;
@@ -627,7 +647,8 @@ function positionsOuterRings(depth)
             // this shifts the position counter clockwise until there is empty space
             // due to the sorting by amount of connections and positions being given counter clockwise looking for space clockwise should be useless
             // in theory we could land in an infinite loop, but due to sorting it's highly unlikely
-            do {
+            do
+            {
                 free = true;
                 for (var k = 0; k < connectionsOut.length; k++)
                 {
@@ -674,16 +695,14 @@ function positionsOuterRings(depth)
                 posArray[depth].push(connectionsOut[j]);
                 index = posArray[depth].indexOf(connectionsOut[j]);
                 direction = getDirectionByAngle(index * angleDiff + offset);
-            }
-            else
+            } else
             {
                 offset = 0;
                 var insertIndex = Math.floor(j + startIndex - connectionsOut.length / 2);
                 if (insertIndex < 0)
                 {
                     insertIndex += arrayLength;
-                }
-                else if (insertIndex >= arrayLength)
+                } else if (insertIndex >= arrayLength)
                 {
                     insertIndex -= arrayLength;
                 }
@@ -693,7 +712,7 @@ function positionsOuterRings(depth)
                 direction = getDirectionByAngle(index * angleDiff);
             }
 
-            connectionsOut[j].x = distances[depth]  * direction.x;
+            connectionsOut[j].x = distances[depth] * direction.x;
             connectionsOut[j].y = distances[depth] * direction.y;
             connectionsOut[j].angle = index * angleDiff + offset;
         }
@@ -702,8 +721,7 @@ function positionsOuterRings(depth)
     {
         //allNodesArray will be overwritten with the sorted position array
         allNodesArray[depth] = posArray[depth];
-    }
-    else
+    } else
     {
         var tmp = [];
         for (var i = arrayLength - 1; i >= 0; i--)
@@ -806,7 +824,8 @@ function findConnectedNodesOuterUnique(paraElem)
             elem.claimedAsOuter = true;
         }
     }
-    result.sort(function (a, b) {
+    result.sort(function (a, b)
+    {
         return b.amountConnectionsOut - a.amountConnectionsOut;
     });
     return result;
@@ -825,8 +844,7 @@ function findConnectedNodes(paraElem)
             resultID.push(allEdges[0][i].to);
             node = findInAllNodes(allEdges[0][i].to);
             result.push(node);
-        }
-        else if ((paraElem.id === allEdges[0][i].to) && !resultID.includes(allEdges[0][i].from))
+        } else if ((paraElem.id === allEdges[0][i].to) && !resultID.includes(allEdges[0][i].from))
         {
             resultID.push(allEdges[0][i].from);
             node = findInAllNodes(allEdges[0][i].from);
@@ -842,27 +860,27 @@ function findConnectedNodes(paraElem)
 //Open blue, Blocked red, In Progress yellow, Done green
 var colorPaletteStatus = {
     'Open': 'blue',
-    'Reopened': 'blue',
-    'Accepted': 'blue',
-    'Reported': 'blue',
+    // 'Reopened': 'blue',
+    // 'Accepted': 'blue',
+    // 'Reported': 'blue',
     'To-Do': 'blue',
     'To Do': 'blue',
-    'Blocked': 'red',
-    'On hold': 'red',
-    'Need more info': 'red',
-    'Waiting 3rd party': 'red',
-    'In Progress': 'yellow',
-    'Implemented': 'yellow',
-    'Resolved': 'green',
+    // 'Blocked': 'red',
+    // 'On hold': 'red',
+    // 'Need more info': 'red',
+    // 'Waiting 3rd party': 'red',
+    // 'In Progress': 'yellow',
+    // 'Implemented': 'yellow',
+    // 'Resolved': 'green',
     'Closed': 'green',
-    'Withdrawn': 'green',
-    'Rejected': 'green',
+    // 'Withdrawn': 'green',
+    // 'Rejected': 'green',
     'Done': 'green',
-    'Verified': 'green',
-    'not in database': 'unknown',
-    'confidential': 'unknown',
-    'not specified': 'unknown',
-    'undefined': 'unknown'
+    // 'Verified': 'green',
+    // 'not in database': 'unknown',
+    // 'confidential': 'unknown',
+    // 'not specified': 'unknown',
+    // 'undefined': 'unknown'
 };
 
 var colorPaletteHealth = {
@@ -1022,11 +1040,11 @@ function createDepthLevelNodes(nodeEdgeObject)
                 nodeprio = "confidential";
             } else if (v['resolution'] === "not in database")
             {
-                nodetype = "not in database"
-                nodeprio = "not in database"
+                nodetype = "not in database";
+                nodeprio = "not in database";
             } else
             {
-                nodetype = "not specified"
+                nodetype = "not specified";
             }
         }
         if (!(nodetype == null))
@@ -1072,7 +1090,11 @@ function createDepthLevelNodes(nodeEdgeObject)
             type: nodetype,
             priority: nodeprio,
         });
+
+
+        //
     });
+    // console.log("DepthLevelNodes: " + console.log(JSON.stringify(depthLevelNodes[0], null, 4)));
     return depthLevelNodes;
 }
 
@@ -1130,6 +1152,7 @@ function initNodesEdges()
     allNodesArray[0] = createDepthLevelNodes(nodeEdgeObject['0']['nodes']);
     depth0Edges = createDepthLevelEdges(nodeEdgeObject['0']['edges']);
     allNodesArray[1] = createDepthLevelNodes(nodeEdgeObject['1']['nodes']);
+    // console.log(JSON.stringify(nodeEdgeObject['1']['nodes'], null, 4));
     depth1Edges = createDepthLevelEdges(nodeEdgeObject['1']['edges']);
     allNodesArray[2] = createDepthLevelNodes(nodeEdgeObject['2']['nodes']);
     depth2Edges = createDepthLevelEdges(nodeEdgeObject['2']['edges']);
@@ -1345,7 +1368,7 @@ function proposedLinks()
     setTimeout(function ()
     {
         network.fit();
-        }, 1000);
+    }, 1000);
 }
 
 function fillProposedHTML()
@@ -1424,24 +1447,21 @@ function checkHealth()
             if (v['inc_type'][0] === true)
             {
                 inconsistentTypes.push("ok");
-            }
-            else
+            } else
             {
                 inconsistentTypes.push(v['inc_type'][1]);
             }
             if (v['inc_res'][0] === true)
             {
                 inconsistentResolutions.push("ok");
-            }
-            else
+            } else
             {
                 inconsistentResolutions.push(v['inc_res'][1]);
             }
             if (v['inc_comm'][0] === true)
             {
                 inconsistentComments.push("ok");
-            }
-            else
+            } else
             {
                 inconsistentComments.push(v['inc_comm'][1]);
             }
@@ -1500,9 +1520,9 @@ function fillHealthHTML()
         stringList = stringList + "<tr><td class='hoverable-text'><a href='../browse/" + inconsistentIssues[i].key + "' target='_blank'>" + inconsistentIssues[i].key +
             "<span class='tooltiptext-left'>" + title + "</span>" +
             "</a></td>" +
-            "<td bgcolor="+ bgcol_type + ">" + inconsistentTypes[i] + "</td>" +
-            "<td bgcolor="+ bgcol_res + ">" + inconsistentResolutions[i] + "</td>" +
-            "<td bgcolor="+ bgcol_comm + ">" + inconsistentComments[i] + "</td>" +
+            "<td bgcolor=" + bgcol_type + ">" + inconsistentTypes[i] + "</td>" +
+            "<td bgcolor=" + bgcol_res + ">" + inconsistentResolutions[i] + "</td>" +
+            "<td bgcolor=" + bgcol_comm + ">" + inconsistentComments[i] + "</td>" +
             "</tr>";
     }
     stringList = stringList + "</table>";
@@ -1527,8 +1547,7 @@ function colorByHealth()
         if (incIssueInfo.healthStatus === true)
         {
             nodes.update({id: tempid, group: 'green'})
-        }
-        else
+        } else
         {
             nodes.update({id: tempid, group: 'red'})
         }
@@ -1542,7 +1561,7 @@ function colorByStatus()
     {
         tempid = ids[i];
         var ogIssueInfo = findElement(ogIssueGroupStatus, "id", tempid);
-        console.log("this is the group: " +  ogIssueInfo);
+        console.log("this is the group: " + ogIssueInfo);
         nodes.update({id: tempid, group: ogIssueInfo.ogGroup})
 
     }
@@ -1567,8 +1586,7 @@ function sortProposed(array)
         if (array[maxIndex].fromName === propLinksIssue)
         {
             nameToAdd = array[maxIndex].toName;
-        }
-        else if (array[maxIndex].toName === propLinksIssue)
+        } else if (array[maxIndex].toName === propLinksIssue)
         {
             nameToAdd = array[maxIndex].fromName;
         }
@@ -1792,7 +1810,8 @@ function filterNodes()
     {
         nodes.add(allNodesArray[i]);
     }
-    if (proposedViewActive) {
+    if (proposedViewActive)
+    {
         currentIssue = propLinksIssue;
         proposedViewActive = false;
         proposedLinks();
@@ -1826,8 +1845,7 @@ function infoTab()
     if (infoType === "issue")
     {
         infoType = "suggestion"
-    }
-    else if (infoType === "user_story")
+    } else if (infoType === "user_story")
     {
         infoType = "user-story";
     }
@@ -1910,7 +1928,8 @@ function initNetwork()
         //TODO: There must be an easier way to create these groups
         "groups": {
             "yellow": {
-                color: {background: '#ffd351', border: '#FFFFFF', highlight: {
+                color: {
+                    background: '#ffd351', border: '#FFFFFF', highlight: {
                         border: '#666666',
                         background: '#FFE69E'
                     },
@@ -2060,7 +2079,8 @@ function initNetwork()
 
     //interact with network
     //if a node is selected display information in infobox
-    network.on("selectNode", function (params){
+    network.on("selectNode", function (params)
+    {
         //params.event = "[original event]";
 
         var node = nodes.get(params.nodes)[0];
@@ -2094,7 +2114,6 @@ function initNetwork()
     });
 
 
-
     //doubleclicking searches for the clicked issue
     network.on("doubleClick", function (params)
     {
@@ -2126,7 +2145,8 @@ function initNetwork()
             if (typeof issueNode !== "undefined")
             {
                 currentIssue = issueNode.id;
-                if (infoTabActive) {
+                if (infoTabActive)
+                {
                     infoTab();
                 }
             }
